@@ -23,15 +23,11 @@ import java.util.List;
 @RestController
 public class RESTController {
 
-   //TODO inject components (TodoRepository and GridFsTemplate)
-
     @Autowired
     private GridFsTemplate gridFsTemplate;
 
     @RequestMapping("/files/{filename}")
     public ResponseEntity<InputStreamResource> getFileByName(@PathVariable String filename) throws IOException {
-
-        //TODO implement method
 
         GridFSFile file = gridFsTemplate.findOne(new Query().addCriteria(Criteria.where("filename").is(filename)));
 
@@ -48,12 +44,9 @@ public class RESTController {
     @CrossOrigin("*")
     @PostMapping("/files")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
-
-        //TODO implement method
-
         gridFsTemplate.store(file.getInputStream(),file.getName(), file.getContentType());
-
-        return null;
+        redirectAttributes.addFlashAttribute("message","File "+ file.getName() + "successfully uploaded");
+        return "redirect:/";
     }
 
     @CrossOrigin("*")
