@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
 import {Login} from "./components/Login";
 import Home from "./components/Home";
-import {NewTask} from "./components/NewTask";
+import NewTask from "./components/NewTask";
 import {FilterTask} from "./components/FilterTask";
 import {UserProfile} from "./components/UserProfile";
 
@@ -28,28 +28,17 @@ class App extends Component{
     const UserProfileView = () => (
       <UserProfile />
     );
-    if(!localStorage.getItem("isLoggedIn")){
-      return (
-        <Router>
-          <div className="App">   
-            <Route exact path="/" component={LoginView} />          
-            <Route exact path="/Login" component={LoginView} />
-            <Route exact path="/UserProfile" component={UserProfileView} />
-          </div>
-        </Router>
-      );
-    }else{
-      return(
-        <Router>
-          <div className="App">
-            <Home />
-            <Route exact path="/NewTask" component={NewTaskView} />
-            <Route exact path="/FilterTask" component={FilterTaskView} />
-            <Route exact path="/UserProfile" component={UserProfileView} />
-          </div>
-        </Router>
-      )
-    }
+    return (
+      <Router>
+        <div className="App">   
+          <Route exact path="/" component={LoginView} />          
+          <Route exact path="/Login" component={LoginView} />
+          <Route exact path="/UserProfile" component={UserProfileView} />
+          <Route exact path="/NewTask" component={NewTaskView} />
+          <Route exact path="/FilterTask" component={FilterTaskView} />
+        </div>
+      </Router>
+    );
   }
 }
 

@@ -14,19 +14,75 @@ import DateFnsUtils from "@date-io/date-fns";
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from "@material-ui/pickers";
 import "./style.css"
 
-export class NewTask extends React.Component {
-    constructor(props){
-        super(props);
-        this.state={descripcion:"",responsable:{name:"",email:""},status:"",dueDate:new Date()};
-        this.handleSumit=this.handleSumit.bind(this);
-        this.handleInputChange=this.handleInputChange.bind(this);
+export default function NewTask(props){
+
+    const[file,setFile]=React.useState();
+
+    const uploadFile = (task) =>{
+        addTask(task);
+        console.log(file);
+        const formData = new FormData();
+        formData.append('file', file);
+        fetch('http://localhost:8080/api/files', {
+          method: 'POST',
+          mode:'no-cors',
+          body: formData
+        }).then(function (response) {
+          if (response.ok) {
+            response.json().then(function (res) {
+              console.log(res);
+            })
+          } else {
+            console.log("")
+          }
+        }).catch(function (error) {
+          console.log("Bad petition:" + error.message);
+        });
+    
     }
 
-    render(){
-        return (
+    const addTask = (task) => {
+        fetch('http://localhost:8080/api/todo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', 'Accept': 'application/json',
+          },
+          body: JSON.stringify(task)
+        }).then(function (response) {
+          if (response.ok) {
+            response.json().then(function (res) {
+              console.log(res);
+            })
+          } else {
+            console.log("")
+          }
+        }).catch(function (error) {
+          console.log("Bad petition:" + error.message);
+        });
+    
+    }
+    
+
+    const handleSumit = (e) =>{
+        let task ={
+            descripcion: document.getElementById("description").value,
+            priority: document.getElementById("priority").value,
+            dueDate: document.getElementById("dueDate").value,
+            responsable: document.getElementById("responsible").value,
+            status: document.getElementById("status").value
+        }
+        console.log(task);
+        uploadFile(task);
+    };
+
+    const handleInputChange=(e) =>{
+        setFile(e.target.files[0]);  
+    }
+
+    return (
         <React.Fragment>
             <CssBaseline />
-            <form className="layout" onSubmit={this.handleSumit} >
+            <form className="layout">    
                 <Paper className="paper">
                     <Typography variant="h2">New Task</Typography>
                     <Avatar className="avatar">
@@ -34,11 +90,15 @@ export class NewTask extends React.Component {
                     </Avatar>
                     <FormControl margin="normal" fullWidth>
                         <InputLabel>Description</InputLabel>
-                        <Input id="descripcion" name="descripcion" type="text"/>
+                        <Input id="description" name="description" type="text"/>
+                    </FormControl>
+                    <FormControl margin="normal" fullWidth>
+                        <InputLabel>Priority</InputLabel>
+                        <Input id="priority" name="priority" type="text"/>
                     </FormControl>
                     <FormControl margin="normal" fullWidth>
                         <InputLabel>Responsible</InputLabel>
-                        <Input id="responsable" name="responsable" type="text" />
+                        <Input id="responsible" name="responsible" type="text" />
                     </FormControl>
                     <FormControl margin="normal" fullWidth>
                         <InputLabel>Status (Ready/In Progress/Completed)</InputLabel>
@@ -56,10 +116,10 @@ export class NewTask extends React.Component {
                     </MuiPickersUtilsProvider>
                     <br/>
                     <br/>
-                    <Input type="file" id="file" onChange={this.handleInputChange}/>
+                    <Input type="file" id="file" onChange={handleInputChange}/>
                     <br/>
                     <br/>
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSumit} >
                         Add
                     </Button>
                     <br/>
@@ -67,45 +127,5 @@ export class NewTask extends React.Component {
                 </Paper>
             </form>
         </React.Fragment>
-        );
-    }
-
-    handleInputChange(e) {
-        this.setState({
-            file: e.target.files[0]
-        });                
-    }
-
-    handleClose(){
-        this.setOpen(false);
-    };
-    
-    handleOpen(){
-      this.setOpen(true);
-    };
-
-
-    handleSumit(e){
-        /**e.preventDefault();
-        if (!this.state.descripcion.length || !this.state.responsable.name.length || !this.state.status.length){
-          return;
-        }
-        if (localStorage.getItem("items") === null) {
-          var items = [this.state];
-          localStorage.setItem("items", JSON.stringify(items));
-        } else {
-          let items = JSON.parse(localStorage.getItem("items"));
-          items.push(this.state);
-          localStorage.setItem("items", JSON.stringify(items));
-        }
-        document.location.href = "/Home";**/
-        let task ={
-            descripcion: document.getElementById("descripcion").value,
-            dueDate: document.getElementById("dueDate").value,
-            responsable: document.getElementById("responsable").value,
-            status: document.getElementById("status").value
-        }
-        console.log(task);
-
-    };
+    );
 }
