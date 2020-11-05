@@ -31,7 +31,7 @@ class App extends Component{
     return (
       <Router>
         <div className="App">   
-          <Route exact path="/" component={LoginView} />          
+          <Route exact path="/" component={Home} />          
           <Route exact path="/Login" component={LoginView} />
           <Route exact path="/UserProfile" component={UserProfileView} />
           <Route exact path="/NewTask" component={NewTaskView} />

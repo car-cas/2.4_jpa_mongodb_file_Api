@@ -59,7 +59,6 @@ export default function NewTask(props){
         }).catch(function (error) {
           console.log("Bad petition:" + error.message);
         });
-    
     }
     
 
